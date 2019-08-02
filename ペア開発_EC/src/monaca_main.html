@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+​
+    </span>
+​
+​
+    <script url1="http://weather.livedoor.com/forecast/webservice/json/v1?city=400010"></script>
+​
+​
+    <!--天気情報api -->
+    <!-- <script url2="http://weather.livedoor.com/area/forecast/400010"
+    type="text/javascript">
+    weather = data['forecasts'][0]['url'];
+​
+    return weather; -->
+    </script>
+​
+​
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript">
+    // 日付と時間
+    timerID = setInterval('clock()',500); //0.5秒毎にclock()を実行
+    function clock() {
+      // innerHTMLを変更
+      document.getElementById("view_clock1").innerHTML = getToday();
+      document.getElementById("view_clock").innerHTML = getNow();
+      }
+    function getToday() {
+​
+      let now = new Date();
+      var mon = now.getMonth()+1; // 月 １を足すこと
+      var day = now.getDate();  // 日
+      var you = now.getDay(); //曜日(0～6=日～土)
+      //曜日の選択肢
+      var youbi = new Array("日","月","火","水","木","金","土");
+​
+      //出力用
+      var a = mon + "月" + day + "日"  + "(" + youbi[you] + ")";
+      return a;
+    }
+    function getNow() {
+      let now = new Date();
+      var hour = now.getHours();  // 時
+      var min = now.getMinutes();  // 分
+      var sec = now.getSeconds();  // 秒
+​
+     //出力用
+     if(min < 10){
+       var b = hour + ":0" + min + ":" + sec;
+     }
+     else{
+       var b = hour + ":" + min + ":" + sec;
+     }
+      return b;
+    }
+​
+    // Success callback for get geo coordinates
+var onWeatherSuccess = function (position) {
+    Latitude = position.coords.latitude;
+    Longitude = position.coords.longitude;
+    getWeather(Latitude, Longitude);
+}
+​
+​
+// 災害
+window.onload = function () {
+  var timer = null;
+  function pullMeteoHeadline() {
+    var url = 'http://www.data.jma.go.jp/developer/xml/feed/extra.xml';
+    var xml = UrlFetchApp.fetch(url).getContentText();
+    var xmlDoc = XmlService.parse(xml);
+    var rootDoc = xmlDoc.getRootElement();
+​
+    var nsDefault = XmlService.getNamespace("", 'http://www.w3.org/2005/Atom');
+​
+    var entries = rootDoc.getChildren("entry", nsDefault);
+​
+    var length = entries.length;
+​
+    var currentDate = new Date().getTime();
+​
+    var title, updated, date, author, content;
+    var headlines = "";
+    // 最長で10分後に更新される
+    var past10Min = 5 * 60 * 1000;
+​
+    // 10分以内に更新された東京都の気象警報のみ取得
+    for(var i=0; i < length; i++) {
+      title = entries[i].getChildText("title", nsDefault);
+  //    if(title != "気象特別警報・警報・注意報") continue;
+  //    Logger.log(title);
+​
+      updated = entries[i].getChildText("updated", nsDefault);
+      date = new Date(updated).getTime();
+      if(currentDate - date > past10Min) continue;
+​
+      author = entries[i].getChild("author", nsDefault).getChildText("name", nsDefault);
+  //    if(author != "気象庁予報部") continue;
+  //    Logger.log(author);
+​
+      content = entries[i].getChildText("content", nsDefault);
+      if(content.indexOf('福岡') === -1) continue;
+  //    Logger.log(content);
+​
+      var titleM = content.split('】')
+     headlines += Utilities.formatString('[%s]\n%s\n%s\n', titleM[0] + "】");
+    }
+​
+    headlines = "";
+​
+    // 値が含まれていたら画面遷移
+    if(headlines !== "")
+    {
+      Logger.log(headlines);
+      location.href = 'index2.html?headlines=' + headlines;
+​
+      // 画面遷移
+      href="index2.html"
+      //このheadlinesをテキストとして出力する
+    }
+  }
+  timer = setInterval(pullMeteoHeadline, 300000);
+}
+​
+​
+​
+</script>
+</head>
+<body>
+  <br />
+  <p id="view_clock1"></p>
+  <h1 id="view_clock"></h1>
+
+  <a href="index2.html">あ</a>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style2.css">
+    <script src="components/loader.js"></script>
+    <span id="view_clock"></span>
+
+​
+<script type="text/javascript">
+timerID = setInterval('clock()',500); //0.5秒毎にclock()を実行
+​
+function clock() {
+	document.getElementById("view_clock").innerHTML = getNow();
+}
+​
+function getNow() {
+	var now = new Date();
+	var hour = now.getHours();
+	var min = now.getMinutes();
+  var sec = now.getSeconds();  // 秒
+​
+	//出力用
+	var s =  hour + ":" + min + ":" + sec;
+   if(min < 10){
+       var b = hour + ":0" + min + ":" + sec;
+     }
+     else{
+       var b = hour + ":" + min + ":" + sec;
+     }
+	return b;
+}
+​
+​
+​
+​
+​
+</script>
+</head>
+<body>
+  <br />
+  <p align="center">大雨と落雷及び突風に関する福岡県気象情報</p>
+</body>
+</html>
